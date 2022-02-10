@@ -1,4 +1,4 @@
-# Moonphase
+# Particle System
 
 ## running p5 application:
 
