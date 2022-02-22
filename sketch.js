@@ -1,10 +1,16 @@
 let particles = [];
-let croissant;
+let croissants = [];
+let wind; 
+let gravity; 
 
 
 function setup(){
 	createCanvas(800, 800);
-  croissant = loadImage('assets/croissant1.png');
+  croissants[0] = loadImage('assets/croissant1.png');
+  croissants[1] = loadImage('assets/croissant2.png');
+  wind = createVector(0.008, 0);
+  gravity = createVector(0, 0.005);
+
   for (var i = 0; i < 1000; i++) {
     particles.push(new Particle);
   }
@@ -12,8 +18,15 @@ function setup(){
 }
 
 
+let timer = 0;
+let counted = false;
+
 function draw(){
   background(0);
+  let windAmount = map(mouseX, 0, width, -1, 1);
+  wind.mult(windAmount);
+  print(wind.x);
+      
   for (var i = 0; i < particles.length; i++) {
     particles[i].move();
     particles[i].display();
@@ -26,26 +39,28 @@ function draw(){
 
 class Particle {
     constructor(){ //what data our objects have
-      this.x = random(width);
-      this.y = random(height);
-      this.size = random(5, 20);
-      this.xSpeed = random(-1, 1);
-      this.ySpeed = random(-1, 1);
+      this.location = createVector(0,0);
+      this.velocity = p5.Vector.random2D();
+      this.velocity = this.velocity.mult(random(-1, 1));
+      this.size = 25;
+      this.image = int(random(2));
     }
 
     display(){
-      image(croissant, this.x, this.y, this.size, this.size);
+      image(croissants[this.image], this.location.x, this.location.y, this.size, this.size);
     }
 
     move(){
-        this.x = this.x + this.xSpeed;
-        this.y = this.y + this.ySpeed;
-        if (this.x > width || this.x < 0){
-          this.x = random(width);
-        }
-        if (this.y > height || this.y < 0){
-          this.y = random(height);
-        }
+        this.velocity = this.velocity.add(gravity);
+        this.velocity = this.velocity.add(wind);
+        this.location = this.location.add(this.velocity);
+
+        // if (this.x > width || this.x < 0){
+        //   this.x = random(width);
+        // }
+        // if (this.y > height || this.y < 0){
+        //   this.y = random(height);
+        // }
     }
 
 
