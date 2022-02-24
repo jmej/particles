@@ -13,7 +13,7 @@ function setup(){
   gravity = createVector(0, 0.1);
 
   for (var i = 0; i < 100; i++) {
-    particles.push(new Particle);
+    particles.push(new Particle(i));
   }
 
 }
@@ -40,15 +40,17 @@ function draw(){
 }
 
 class Particle {
-    constructor(){ //what data our objects have
-      this.location = createVector(width/2, height/2);
+    constructor(index_){ //what data our objects have
+      this.location = createVector(random(width), random(height));
       this.velocity = p5.Vector.random2D(); //instead of xSpeed and ySpeed
       this.velocity.mult(random(-1, 1));
       this.size = 25;
       this.image = int(random(2));
+      this.index = index_;
     }
 
     display(){
+      imageMode(CENTER);
       image(croissants[this.image], this.location.x, this.location.y, this.size, this.size);
     }
 
@@ -56,6 +58,14 @@ class Particle {
         this.velocity.add(gravity);
         this.velocity.add(wind);
         this.location.add(this.velocity);
+
+        let colliding = this.amIColliding();
+
+        if(colliding){
+          print("collision!")
+          this.velocity.x = this.velocity.x * -1;
+          this.velocity.y = this.velocity.y * -1;
+        }
 
         if (this.location.x > width || this.location.x < 0){
           this.velocity.x = this.velocity.x * -1;
@@ -66,9 +76,28 @@ class Particle {
        print(this.velocity.x);
     }
 
+    amIColliding(){
+      //how big is our croissant? 10 pixels 10 pixels?
+      let hitbox = 10;
+      for (var i = 0; i < particles.length; i++) {
+          if( i != this.index){
+            let xIsTooClose = false;
+            let yIsTooClose = false;
+            //some particle's X AND that same particle's Y are close to my X And my Y
+            //is X close?
+            if ((abs(this.location.x - particles[i].location.x)) <= hitbox){
+              xIsTooClose = true;
+            }
+            if ((abs(this.location.y - particles[i].location.y)) <= hitbox){
+              yIsTooClose = true;
+            }
+            if(xIsTooClose && yIsTooClose){
+              return true;
+            }
 
-
-
+          }
+      }
+    }
 
 }
 
