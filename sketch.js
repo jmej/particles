@@ -4,14 +4,15 @@ let wind;
 let gravity; 
 
 
+
 function setup(){
 	createCanvas(800, 800);
   croissants[0] = loadImage('assets/croissant1.png');
   croissants[1] = loadImage('assets/croissant2.png');
-  wind = createVector(0.008, 0);
-  gravity = createVector(0, 0.005);
+  wind = createVector(0.1, 0);
+  gravity = createVector(0, 0.1);
 
-  for (var i = 0; i < 1000; i++) {
+  for (var i = 0; i < 100; i++) {
     particles.push(new Particle);
   }
 
@@ -23,9 +24,10 @@ let counted = false;
 
 function draw(){
   background(0);
-  let windAmount = map(mouseX, 0, width, -1, 1);
-  wind.mult(windAmount);
-  print(wind.x);
+  gravity.y = map(mouseY, 0, width, 0, 0.1);
+  wind.x = map(mouseX, 0, width, -0.1, 0.1);
+  //print(gravity.y);
+ 
       
   for (var i = 0; i < particles.length; i++) {
     particles[i].move();
@@ -39,9 +41,9 @@ function draw(){
 
 class Particle {
     constructor(){ //what data our objects have
-      this.location = createVector(0,0);
-      this.velocity = p5.Vector.random2D();
-      this.velocity = this.velocity.mult(random(-1, 1));
+      this.location = createVector(width/2, height/2);
+      this.velocity = p5.Vector.random2D(); //instead of xSpeed and ySpeed
+      this.velocity.mult(random(-1, 1));
       this.size = 25;
       this.image = int(random(2));
     }
@@ -51,16 +53,17 @@ class Particle {
     }
 
     move(){
-        this.velocity = this.velocity.add(gravity);
-        this.velocity = this.velocity.add(wind);
-        this.location = this.location.add(this.velocity);
+        this.velocity.add(gravity);
+        this.velocity.add(wind);
+        this.location.add(this.velocity);
 
-        // if (this.x > width || this.x < 0){
-        //   this.x = random(width);
-        // }
-        // if (this.y > height || this.y < 0){
-        //   this.y = random(height);
-        // }
+        if (this.location.x > width || this.location.x < 0){
+          this.velocity.x = this.velocity.x * -1;
+        }
+        if (this.location.y > height || this.location.y < 0){
+          this.velocity.y = this.velocity.y * -1;
+        }
+       print(this.velocity.x);
     }
 
 
