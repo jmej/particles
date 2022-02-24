@@ -3,6 +3,7 @@ let croissants = [];
 let wind; 
 let gravity; 
 
+let myBoolean;
 
 
 function setup(){
@@ -100,6 +101,7 @@ class Particle {
     }
 
 }
+
 
 //each particle is something like:
 //let thing = {x: 430, y: 200, size: 100, xSpeed: -0.6, ySpeed: 0.345};
